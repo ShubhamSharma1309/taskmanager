@@ -1,27 +1,30 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "target": "es6",
     "module": "commonjs",
-    "target": "es2015",
+    "lib": [
+      "es2016",
+      "dom"
+    ],
+    "allowJs": true,
+    "checkJs": true,
+    "declaration": true,
+    "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "removeComments": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "pretty": true,
+    "experimentalDecorators": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
-  ],
-  "lib": [
-    "es2015"
-  ],
-  "typeRoots": [
-    "node_modules/@types"
-  ],
-  "types": [
-    "node",
-    "express"
   ]
 }

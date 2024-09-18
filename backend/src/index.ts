@@ -1,8 +1,10 @@
 import express from 'express';
+import connectDB from './db';
+
 const app = express();
 
-console.log('hello bro');
+connectDB();
 
-app.listen('3000',()=>{
-    console.log('It is running on http://localhost:3000');
+app.listen('3000', () => {
+    console.log('server running on http://localhost:3000');
 })
