@@ -148,4 +148,6 @@ Homestead.json
 # Environment variables #
 #########################
 .env
-.env.*
+
+
+diagram.png
