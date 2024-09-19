@@ -16,8 +16,8 @@ export const apiRateLimit = rateLimit({
 });
 
 export const authRateLimit = rateLimit({
-  windowMs: 10 * 60 * 1000, // Increased to 1 hour
-  max: 20, // Increased to 20 requests
+  windowMs: 10 * 60 * 1000, 
+  max: 20, 
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Rate limit exceeded. Please try again after 1 hour.',

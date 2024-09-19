@@ -42,7 +42,6 @@ export const errorMiddleware = (err: Error, req: Request, res: Response, next: N
         });
     }
 
-    // Default error response
     res.status(500).json({
         success: false,
         message: "Internal Server Error"
