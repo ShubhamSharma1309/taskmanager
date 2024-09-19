@@ -7,5 +7,7 @@ export default {
     JWT_SECRET: process.env.JWT_SECRET || 'mysecret',
     JWT_EXPIRE: '1h', 
     PORT: process.env.PORT || 5000,
-    NODE_ENV: process.env.NODE_ENV || 'development'
+    NODE_ENV: process.env.NODE_ENV || 'development',
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'myrefreshsecret',
+    REFRESH_TOKEN_EXPIRE: process.env.REFRESH_TOKEN_EXPIRE || '7d',
 };
