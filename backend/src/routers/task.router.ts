@@ -4,10 +4,10 @@ import { createTask, getAllTasks, getTask, removeTask, updateTask } from '../con
 import { apiRateLimit } from '../middleware/rateLimiter';
 const router = Router();
 
-router.post('/create', apiRateLimit, authJWT, createTask);
-router.get('/get/:id', apiRateLimit, authJWT, getTask);
-router.get('/getAll', apiRateLimit, authJWT, getAllTasks);
-router.put('/update/:id', apiRateLimit, authJWT, updateTask);
-router.delete('/remove/:id', apiRateLimit, authJWT, removeTask);
+router.post('/create',  authJWT, createTask);
+router.get('/get/:id',  authJWT, getTask);
+router.get('/getAll',  authJWT, getAllTasks);
+router.put('/update/:id',  authJWT, updateTask);
+router.delete('/remove/:id',  authJWT, removeTask);
 
 export default router;

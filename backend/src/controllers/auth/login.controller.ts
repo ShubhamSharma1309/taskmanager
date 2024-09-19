@@ -17,6 +17,15 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const tokens = generateTokens(user);
 
+        res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+
+        // Verify cookies are being set
+        const cookies = res.getHeader('Set-Cookie');
+        if (!cookies || (Array.isArray(cookies) && cookies.length < 2)) {
+            throw new Error('Failed to set cookies');
+        }
+
         res.status(200).json({
             success: true,
             ...tokens,

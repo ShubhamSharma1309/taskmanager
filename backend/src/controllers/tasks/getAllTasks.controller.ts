@@ -8,7 +8,7 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
         const userId = req.user?.id;
 
         if (!userId) {
-            return next(new UnauthorizedError('No token provided'));
+            return next(new UnauthorizedError('No user found'));
         }
 
         const tasks = await Task.find({ userId });
