@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { authJWT } from '../middleware/authMiddleware';
 import { createTask, getAllTasks, getTask, removeTask, updateTask } from '../controllers/tasks';
-import { apiRateLimit } from '../middleware/rateLimiter';
+import { authJWT } from '../middleware/authMiddleware';
 const router = Router();
 
 router.post('/create',  authJWT, createTask);

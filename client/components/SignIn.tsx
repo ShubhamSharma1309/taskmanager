@@ -69,7 +69,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
+    <div className="w-full flex flex-col pt-40 items-center justify-center">
       <BackgroundLines className="absolute inset-0">
         <div className="absolute inset-0" />
       </BackgroundLines>

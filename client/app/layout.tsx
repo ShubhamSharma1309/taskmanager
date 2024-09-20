@@ -36,9 +36,9 @@ export default function RootLayout({
   const { theme } = useTheme();
 
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden ${theme === "dark" ? "bg-black/[0.96] bg-grid-white/[0.02]" : "bg-white"}`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white dark:bg-stone-900  antialiased bg-background text-foreground min-h-screen w-full flex flex-col relative ${theme === "dark" ? "bg-black/[0.96] bg-grid-white/[0.02]" : "bg-white"}`}
       >
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
@@ -48,8 +48,10 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <NavBar />
-              {children}
+              <div className="flex flex-col min-h-screen">
+                <NavBar />
+                <main className="flex-grow">{children}</main>
+              </div>
               <Toaster />
             </ThemeProvider>
           </PersistGate>

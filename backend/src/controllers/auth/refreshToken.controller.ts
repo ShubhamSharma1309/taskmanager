@@ -8,7 +8,7 @@ import { NotFoundError, UnauthorizedError } from '../../utils/Error';
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { refreshToken } = req.body;
+        const refreshToken  = req.cookies?.refreshToken;
         if (!refreshToken) {
             throw new UnauthorizedError('Refresh token is required');
         }

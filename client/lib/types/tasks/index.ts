@@ -16,7 +16,7 @@ export type Task = z.infer<typeof TaskSchema>;
 
 export const TasksSchema = z.array(TaskSchema);
 
-export type Tasks = z.infer<typeof TasksSchema>;
+export type TTasks = z.infer<typeof TasksSchema>;
 
 export const TaskUpdateSchema = TaskSchema.partial().omit({ userId: true, _id: true, createdAt: true, updatedAt: true });
 

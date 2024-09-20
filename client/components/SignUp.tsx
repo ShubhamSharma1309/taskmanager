@@ -81,7 +81,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="w-full pt-20 flex flex-col items-center justify-center">
+    <div className="w-full pt-40 flex flex-col items-center justify-center">
       <BackgroundLines className="absolute inset-0">
         <div className="absolute inset-0" />
       </BackgroundLines>
