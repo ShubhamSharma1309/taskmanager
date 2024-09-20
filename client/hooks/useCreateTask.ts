@@ -24,6 +24,10 @@ export default function useCreateTask() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleSelectChange = (name: string, value: string) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrors({});
@@ -78,6 +82,7 @@ export default function useCreateTask() {
     return{
         handleSubmit,
         handleChange,
+        handleSelectChange,
         toast,
         currentUser,
         errors,

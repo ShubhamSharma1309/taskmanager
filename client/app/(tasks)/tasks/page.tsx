@@ -1,90 +1,64 @@
 "use client"
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Task, Tasks } from '@/lib/types/tasks';
-import { useToast } from '@/hooks/use-toast';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const TasksPage = () => {
-  const [tasks, setTasks] = useState<Tasks>([]);
-  const [loading, setLoading] = useState(true);
-  const { currentUser } = useSelector((state: any) => state.user);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        console.log('Cookies before fetch:', document.cookie);
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tasks/getAll`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
-
-        console.log('Response headers:', response.headers);
-        console.log('Response status:', response.status);
-
-        if (response.status === 401) {
-          console.error('Unauthorized: Cookie might not have been sent or is invalid');
-          throw new Error('Unauthorized');
-        }
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch tasks');
-        }
-
-        const data = await response.json();
-        if (data.success) {
-          setTasks(data.tasks);
-        } else {
-          throw new Error(data.message || 'Failed to fetch tasks');
-        }
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch tasks. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (currentUser) {
-      fetchTasks();
-    }
-  }, [currentUser, toast]);
-
-  if (loading) {
-    return <div>Loading tasks...</div>;
-  }
-
+  const [activeTab, setActiveTab] = useState("Tasks");
   return (
-    <div className="container mx-auto p-4 text-black">
-      <h1 className="text-2xl font-bold mb-4">Your Tasks</h1>
-      {tasks.length === 0 ? (
-        <p>No tasks found. Start by creating a new task!</p>
-      ) : (
-        <ul className="space-y-4">
-          {tasks.map((task: Task) => (
-            <li key={task._id} className="bg-gray-100 p-4 rounded-lg shadow">
-              <h2 className="text-xl font-semibold">{task.title}</h2>
-              <p className="text-gray-600">{task.description}</p>
-              <div className="mt-2">
-                <span className="mr-2">Status: {task.status}</span>
-                <span className="mr-2">Priority: {task.priority}</span>
-                {task.dueDate && (
-                  <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+    <div className='w-full flex pt-32 flex-col items-center justify-center min-h-screen bg-white dark:bg-stone-900'>
+      <div className="bg-background/40 backdrop-blur-md rounded-lg shadow-lg shadow-neutral-800/5 border border-primary/10 pt-2 px-2 absolute  left-0 top-[14vh]  m-2 sm:m-3 sm:left-[8vh] md:m-4">
+        <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4">
+          {/* <Tabs
+            defaultValue="description"
+            className="rounded-md"
+          >
+            <TabsList className="grid grid-cols-2 w-36 sm:w-40 md:w-48 gap-2 sm:gap-3">
+              <TabsTrigger value="description" className="text-xs sm:text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Dashboard</TabsTrigger>
+              <TabsTrigger value="submissions" className="text-xs sm:text-sm md:text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tasks</TabsTrigger>
+            </TabsList>
+          </Tabs> */}
+          <Tabs
+            defaultValue="Tasks"
+            className="rounded-md"
+            value={activeTab}
+            onValueChange={setActiveTab}>
+            <TabsList className="grid grid-cols-2 w-48 gap-2">
+              <TabsTrigger
+                value="Tasks"
+                className={cn(
+                  "transition-colors duration-200",
+                  activeTab === "Dashboard" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
                 )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+              >
+                Tasks
+              </TabsTrigger>
+              <TabsTrigger
+                value="Dashboard"
+                className={cn(
+                  "transition-colors duration-200",
+                  activeTab === "Tasks" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Dashboard
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        {activeTab === "Dashboard" && (
+          <div>This is dashboard</div>
+        )}
+        {activeTab === "Tasks" && (
+          <div>This is Tasks</div>
+        )}
+      </div>
+
+    </div >
   );
 }
 

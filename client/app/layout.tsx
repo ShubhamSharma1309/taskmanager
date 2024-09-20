@@ -6,6 +6,10 @@ import localFont from "next/font/local";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import "./globals.css";
+import NavBar from "@/components/navbar";
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/toaster";
+import { useTheme } from "next-themes";
 
 
 const geistSans = localFont({
@@ -29,14 +33,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { theme } = useTheme();
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden ${theme === "dark" ? "bg-black/[0.96] bg-grid-white/[0.02]" : "bg-white"}`}
       >
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            {children}
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NavBar />
+              {children}
+              <Toaster />
+            </ThemeProvider>
           </PersistGate>
         </Provider>
       </body>
