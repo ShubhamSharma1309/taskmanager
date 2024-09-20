@@ -116,14 +116,14 @@ const TaskTable: React.FC<TaskTableProps> = ({ tasks, setTasks }) => {
                                     {formatTaskAttribute(task.priority)}
                                 </Badge>
                             </TableCell>
-                            <TableCell className=" text-center text-white">
+                            <TableCell className=" text-center font-medium  text-foreground">
                                 {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A'}
                             </TableCell>
                             <TableCell>
                                 <div className="flex justify-center space-x-2">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button variant="outline" size="icon">
+                                            <Button variant="outline" size="sm" className="px-4 py-2">
                                                 <ViewIcon className="h-4 w-4" />
                                             </Button>
                                         </DialogTrigger>
@@ -191,8 +191,9 @@ const TaskTable: React.FC<TaskTableProps> = ({ tasks, setTasks }) => {
                                     )}
                                     <Button
                                         variant="outline"
-                                        size="icon"
+                                        size="sm"
                                         onClick={() => handleDelete(task._id)}
+                                        className="px-4 py-2"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>

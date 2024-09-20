@@ -11,8 +11,14 @@ import { Button } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
 
+interface TasksProps {
+    sortBy: string;
+    filterPriority: string;
+    filterStatus: string;
+    filterDueDate: string;
+}
 
-const Tasks = () => {
+const Tasks: React.FC<TasksProps> = ({ sortBy, filterPriority, filterStatus, filterDueDate }) => {
     const [tasks, setTasks] = useState<TTasks>([]);
     const [loading, setLoading] = useState(true);
     const { currentUser } = useSelector((state: any) => state.user);
@@ -35,7 +41,51 @@ const Tasks = () => {
 
                 const data = await response.json();
                 if (data.success) {
-                    setTasks(data.tasks);
+                    let filteredTasks: Task[] = data.tasks;
+
+                    if (filterPriority !== "ALL") {
+                        filteredTasks = filteredTasks.filter((task: Task) => task.priority === filterPriority);
+                    }
+                    if (filterStatus !== "ALL") {
+                        filteredTasks = filteredTasks.filter((task: Task) => task.status === filterStatus);
+                    }
+                    if (filterDueDate !== "ALL") {
+                        const today = new Date();
+                        const weekLater = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+                        const monthLater = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+                        filteredTasks = filteredTasks.filter((task: Task) => {
+                            const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+                            if (!dueDate) return false;
+                            switch (filterDueDate) {
+                                case "TODAY":
+                                    return dueDate.toDateString() === today.toDateString();
+                                case "THIS_WEEK":
+                                    return dueDate >= today && dueDate <= weekLater;
+                                case "THIS_MONTH":
+                                    return dueDate >= today && dueDate <= monthLater;
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    // Apply sorting
+                    filteredTasks.sort((a: Task, b: Task) => {
+                        switch (sortBy) {
+                            case "dueDate":
+                                return (a.dueDate ? new Date(a.dueDate).getTime() : 0) - (b.dueDate ? new Date(b.dueDate).getTime() : 0);
+                            case "priority":
+                                const priorityOrder: { [key: string]: number } = { LOW: 1, MEDIUM: 2, HIGH: 3 };
+                                return priorityOrder[b.priority] - priorityOrder[a.priority];
+                            case "status":
+                                const statusOrder: { [key: string]: number } = { TODO: 1, IN_PROGRESS: 2, COMPLETED: 3 };
+                                return statusOrder[a.status] - statusOrder[b.status];
+                            default:
+                                return 0;
+                        }
+                    });
+                    
+                    setTasks(filteredTasks);
                 } else {
                     throw new Error(data.message || 'Failed to fetch tasks');
                 }
@@ -54,15 +104,15 @@ const Tasks = () => {
         if (currentUser) {
             fetchTasks();
         }
-    }, [currentUser, toast]);
+    }, [currentUser, toast, sortBy, filterPriority, filterStatus, filterDueDate]);
 
     return (
-        <div className="flex-grow overflow-y-auto pt-14 ">
+        <div className="flex-grow overflow-y-auto pt-8 no-scrollbar">
             <Dialog>
                 <DialogTrigger asChild>
                     <button className="flex items-center  justify-center py-2 px-4 md:py-4 md:px-6 mt-4  rounded-full bg-primary text-primary-foreground absolute  right-0 top-[14vh]  m-2 sm:m-3 sm:right-[9vh] md:m-4 ">
                         <PlusCircle className="w-5 h-5" />
-                        <span className="ml-2 hidden sm:block text-sm font-medium">Add Task</span>
+                        <span className="ml-2 text-sm font-medium">Add Task</span>
                     </button>
                 </DialogTrigger>
                 <DialogContent className="rounded-lg border-input max-w-4xl w-full">
