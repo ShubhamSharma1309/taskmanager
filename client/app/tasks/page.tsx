@@ -16,7 +16,7 @@ const TasksPage = () => {
   const [filterDueDate, setFilterDueDate] = useState("ALL");
   const [activeTab, setActiveTab] = useState("Tasks");
   return (
-    <div className='w-full flex pt-32 flex-col items-center justify-start min-h-screen overflow-y-auto'>
+    <div className='w-full flex pt-32 flex-col items-center justify-start min-h-screen'>
       <div className="bg-background/40 backdrop-blur-md rounded-lg shadow-lg shadow-neutral-800/5 border border-primary/10 pt-2 px-2 absolute left-0 top-[14vh] m-2 sm:m-3 sm:left-[9vh] md:m-4">
         <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4">
           <Tabs
@@ -34,8 +34,8 @@ const TasksPage = () => {
 
       {activeTab === "Tasks" && (
         <>
-          <div className="w-full max-w-4xl mx-auto mt-4">
-            <div className="flex flex-col sm:flex-row justify-center items-center mt-10 md:mt-14 mx-16 sm:mx-12 gap-4  mb-0">
+          <div className="w-full max-w-4xl mx-auto mt-10 sm:mt-4">
+            <div className="flex flex-col sm:flex-row justify-center items-center mt-10 md:mt-14 mx-16 sm:mx-10 gap-4  mb-0">
               <div className="w-full lg:w-auto flex gap-2">
                 <SortBySelect sortBy={sortBy} setSortBy={setSortBy} />
                 <FilterSelect
@@ -77,12 +77,15 @@ const TasksPage = () => {
               </div>
             </div>
           </div>
+          <div className = "overflow-x-auto w-full">
+
           <Tasks
             sortBy={sortBy}
             filterPriority={filterPriority}
             filterStatus={filterStatus}
             filterDueDate={filterDueDate}
           />
+          </div>
         </>
       )}
 
