@@ -86,7 +86,7 @@ export default function useCreateTask() {
         toast,
         currentUser,
         errors,
-        formData
-
+        formData,
+        setFormData,
     }
 }

@@ -20,4 +20,5 @@ export type TTasks = z.infer<typeof TasksSchema>;
 
 export const TaskUpdateSchema = TaskSchema.partial().omit({ userId: true, _id: true, createdAt: true, updatedAt: true });
 
+
 export type TaskUpdate = z.infer<typeof TaskUpdateSchema>;

@@ -1,91 +1,105 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Task, TTasks } from '@/lib/types/tasks';
-import { useToast } from '@/hooks/use-toast';
+"use client";
+import useCreateTask from '@/hooks/useCreateTask';
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea"
 
-const TasksPage = () => {
-  const [tasks, setTasks] = useState<Tasks>([]);
-  const [loading, setLoading] = useState(true);
-  const { currentUser } = useSelector((state: any) => state.user);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        console.log('Cookies before fetch:', document.cookie);
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tasks/getAll`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
-
-        console.log('Response headers:', response.headers);
-        console.log('Response status:', response.status);
-
-        if (response.status === 401) {
-          console.error('Unauthorized: Cookie might not have been sent or is invalid');
-          throw new Error('Unauthorized');
-        }
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch tasks');
-        }
-
-        const data = await response.json();
-        if (data.success) {
-          setTasks(data.tasks);
-        } else {
-          throw new Error(data.message || 'Failed to fetch tasks');
-        }
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch tasks. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (currentUser) {
-      fetchTasks();
-    }
-  }, [currentUser, toast]);
-
-  if (loading) {
-    return <div>Loading tasks...</div>;
-  }
-
-  return (
-    <div className="container mx-auto p-4 text-black">
-      <h1 className="text-2xl font-bold mb-4">Your Tasks</h1>
-      {tasks.length === 0 ? (
-        <p>No tasks found. Start by creating a new task!</p>
-      ) : (
-        <ul className="space-y-4">
-          {tasks.map((task: Task) => (
-            <li key={task._id} className="bg-gray-100 p-4 rounded-lg shadow">
-              <h2 className="text-xl font-semibold">{task.title}</h2>
-              <p className="text-gray-600">{task.description}</p>
-              <div className="mt-2">
-                <span className="mr-2">Status: {task.status}</span>
-                <span className="mr-2">Priority: {task.priority}</span>
-                {task.dueDate && (
-                  <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+interface CreateTaskProps {
+    setCreatingTask: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
-export default TasksPage;
+const CreateTask: React.FC<CreateTaskProps> = ({ setCreatingTask }) => {
+    const {
+        handleSubmit,
+        handleChange,
+        handleSelectChange,
+        errors,
+        formData
+    } = useCreateTask();
+    const { theme } = useTheme();
+
+    return (
+        <AlertDialog open={true}>
+            <AlertDialogContent className="sm:max-w-[425px]">
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Create New Task</AlertDialogTitle>
+                    <AlertDialogDescription>Fill in the details for your new task</AlertDialogDescription>
+                </AlertDialogHeader>
+                <form onSubmit={handleSubmit}>
+                    <div className="grid gap-4 py-4">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="title">Title</Label>
+                            <Input
+                                id="title"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                placeholder="Enter task title"
+                            />
+                            {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="description">Description</Label>
+                            <Textarea
+                                id="description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                placeholder="Enter task description"
+                                className="min-h-[80px]"
+                            />
+                            {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="priority">Priority</Label>
+                            <Select name="priority" value={formData.priority} onValueChange={(value) => handleSelectChange('priority', value)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select priority" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="LOW">Low</SelectItem>
+                                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                                    <SelectItem value="HIGH">High</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="status">Status</Label>
+                            <Select name="status" value={formData.status} onValueChange={(value) => handleSelectChange('status', value)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="TODO">To Do</SelectItem>
+                                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="dueDate">Due Date (optional)</Label>
+                            <Input
+                                type="date"
+                                id="dueDate"
+                                name="dueDate"
+                                value={formData.dueDate ? new Date(formData.dueDate).toISOString().split('T')[0] : ''}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                    <AlertDialogFooter>
+                        <Button variant="outline" onClick={() => setCreatingTask(false)} type="button">Cancel</Button>
+                        <Button type="submit">Create Task</Button>
+                    </AlertDialogFooter>
+                </form>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
+};
+
+export default CreateTask;

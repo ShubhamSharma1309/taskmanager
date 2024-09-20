@@ -1,27 +1,95 @@
 "use client";
-import useCreateTask from '@/hooks/useCreateTask';
-import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea"
+import { TTasks } from '@/lib/types/tasks';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { useToast } from '@/hooks/use-toast';
+import { TaskSchema, Task } from '@/lib/types/tasks';
+import { DialogClose } from '@/components/ui/dialog'
 
-const CreateTask = () => {
-  const {
-    handleSubmit,
-    handleChange,
-    handleSelectChange,
-    errors,
-    formData
-  } = useCreateTask();
-  const { theme } = useTheme();
+const CreateTask = ({ tasks, setTasks }: { tasks: TTasks, setTasks: React.Dispatch<React.SetStateAction<TTasks>> }) => {
+  const [formData, setFormData] = useState<Partial<Task>>({
+    title: '',
+    description: '',
+    status: 'TODO',
+    priority: 'MEDIUM',
+    dueDate: undefined,
+  });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const router = useRouter();
+  const { currentUser } = useSelector((state: any) => state.user);
+  const { toast } = useToast();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrors({});
+
+    try {
+      const validationResult = TaskSchema.omit({ _id: true, userId: true, createdAt: true, updatedAt: true }).safeParse(formData);
+
+      if (!validationResult.success) {
+        const formattedErrors = validationResult.error.format();
+        const newErrors: { [key: string]: string } = {};
+        Object.entries(formattedErrors).forEach(([key, value]) => {
+          if (key !== '_errors' && typeof value === 'object' && '_errors' in value) {
+            newErrors[key] = value._errors.join(', ');
+          }
+        });
+        setErrors(newErrors);
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tasks/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const newTasks: TTasks = [...tasks, data.task];
+        setTasks(newTasks);
+        toast({
+          title: "Success",
+          description: "Task created successfully",
+          className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md",
+        });
+        router.push('/tasks');
+      } else {
+        throw new Error(data.message || 'Failed to create task');
+      }
+    } catch (error) {
+      console.error('Error creating task:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create task. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
-    <div className="w-full flex pt-32 flex-col items-center justify-center min-h-screen bg-white dark:bg-black">
-      <Card className="w-full max-w-3xl backdrop-blur-md bg-background/40 shadow-lg shadow-neutral-600/5 border border-primary/10">
+    <div className="w-full flex  flex-col items-center justify-center  ">
+      <Card className="w-full max-w-6xl backdrop-blur-md bg-background/40 shadow-lg shadow-neutral-600/5 border-0 border-primary/10">
         <CardHeader>
           <CardTitle>Create New Task</CardTitle>
           <CardDescription>Fill in the details for your new task</CardDescription>
@@ -95,8 +163,9 @@ const CreateTask = () => {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end gap-4 mt-4">
-            <Button variant="outline" type="button">Cancel</Button>
-            <Button type="submit">Create Task</Button>
+            <DialogClose>
+              <Button type="submit">Create Task</Button>
+            </DialogClose>
           </CardFooter>
         </form>
       </Card>
