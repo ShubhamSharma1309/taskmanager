@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from '@/hooks/use-toast';
+import { RootState } from "@/lib/redux/store";
 import { signInFailure, signInStart, signInSuccess } from '@/lib/redux/user/userSlice';
 import { SignInCredentials, SignInCredentialsSchema } from '@/lib/types/user';
 import { useRouter } from 'next/navigation';
@@ -17,8 +18,7 @@ const SignIn = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
   const dispatch = useDispatch();
-  //@ts-expect-error
-  const { loading } = useSelector((state) => state.user);
+  const { loading} = useSelector((state: RootState) => state.user);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

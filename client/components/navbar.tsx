@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import { usePathname } from "next/navigation"
 import { Spotlight } from "@/components/ui/Spotlight"
 import { useTheme } from "next-themes"
+import { RootState } from "@/lib/redux/store"
 
 export default function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -19,8 +20,7 @@ export default function NavBar() {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch()
-  //@ts-ignore
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state: RootState) => state.user)
   const { theme } = useTheme()
   const showSpotlight = ['/', '/sign-in', '/sign-up'].includes(pathname)
 
