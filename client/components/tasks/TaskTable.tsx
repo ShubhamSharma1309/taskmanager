@@ -97,7 +97,7 @@ const TaskTable: React.FC<TaskTableProps> = ({ tasks, setTasks }) => {
                         {tasks.map((task) => (
                             <TableRow key={task._id} className="hover:bg-muted/50 transition-colors">
                                 <TableCell className="font-medium truncate text-foreground">{task.title}</TableCell>
-                                <TableCell className="text-muted-foreground truncate">{task.description}</TableCell>
+                                <TableCell className="text-muted-foreground truncate">{task.description.slice(0, 20)}...</TableCell>
                                 <TableCell className='text-center'>
                                     <Badge variant={task.status === 'COMPLETED' ? 'default' : 'secondary'} className={`
                                     backdrop-blur-sm text-white font-medium
