@@ -1,13 +1,17 @@
 import { useToast } from '@/hooks/use-toast'
+import { RootState } from '@/lib/redux/store'
 import { Task } from '@/lib/types/tasks'
 import { useEffect, useState } from 'react'
 import { useDrag } from 'react-dnd'
+import { useSelector } from 'react-redux'
 
 
 
 export default function useDashboard() {
     const [tasks, setTasks] = useState<Task[]>([])
-    const { toast } = useToast()
+    const { toast } = useToast();
+    const { currentUser, accessToken } = useSelector((state: RootState) => state.user);
+
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -16,6 +20,7 @@ export default function useDashboard() {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
                     },
                     credentials: 'include',
                 });
@@ -49,6 +54,7 @@ export default function useDashboard() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({ status: newStatus }),
                 credentials: 'include',

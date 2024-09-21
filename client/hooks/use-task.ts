@@ -1,7 +1,9 @@
 import { useToast } from '@/hooks/use-toast';
+import { RootState } from '@/lib/redux/store';
 import { Task, TaskSchema, TTasks } from '@/lib/types/tasks';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 interface ITask {
     task?: Task;
@@ -23,6 +25,8 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
     const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
     const router = useRouter();
     const { toast } = useToast();
+    const { currentUser, accessToken } = useSelector((state: RootState) => state.user);
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -56,6 +60,8 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                    
                 },
                 body: JSON.stringify(formData),
                 credentials: 'include',
@@ -97,6 +103,7 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(formData),
                 credentials: 'include',
@@ -147,6 +154,9 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tasks/remove/${deletingTaskId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
                 credentials: 'include',
             });
 

@@ -20,7 +20,7 @@ export default function NavBar() {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch()
-  const { currentUser } = useSelector((state: RootState) => state.user)
+  const { currentUser , accessToken } = useSelector((state: RootState) => state.user)
   const { theme } = useTheme()
   const showSpotlight = ['/', '/sign-in', '/sign-up'].includes(pathname)
 
@@ -43,6 +43,9 @@ export default function NavBar() {
       dispatch(signOutUserStart())
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/logout`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        },
         credentials: 'include',
       })
       const data = await res.json()

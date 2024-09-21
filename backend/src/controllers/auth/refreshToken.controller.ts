@@ -8,7 +8,8 @@ import { NotFoundError, UnauthorizedError } from '../../utils/Error';
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const refreshToken  = req.cookies?.refreshToken;
+        const authHeader = req.headers['authorization'];
+        const refreshToken = authHeader && authHeader.split(' ')[1];
         if (!refreshToken) {
             throw new UnauthorizedError('Refresh token is required');
         }

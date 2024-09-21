@@ -9,7 +9,8 @@ import { NotFoundError, UnauthorizedError } from '../../utils/Error';
 
 export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const accessToken = req.cookies?.accessToken;
+        const authHeader = req.headers['authorization'];
+        const accessToken = authHeader && authHeader.split(' ')[1];
         if (!accessToken) {
             throw new UnauthorizedError('No token provided');
         }

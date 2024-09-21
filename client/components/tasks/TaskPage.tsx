@@ -6,8 +6,11 @@ import {
   TabsList,
   TabsTrigger
 } from "@/components/ui/tabs";
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import Filter from "./filter/Filter";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
+import { useRouter } from "next/navigation";
 
 const initialState = {
   sortBy: "dueDate",
@@ -36,6 +39,18 @@ const reducer = (state: typeof initialState, action: { type: string, payload: an
 
 const TasksPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { currentUser } = useSelector((state: RootState) => state.user)
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!currentUser) {
+      router.push('/sign-in');
+    }
+  }, [currentUser, router]);
+
+  if (!currentUser) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div className='w-full flex pt-32 flex-col items-center justify-start min-h-screen'>

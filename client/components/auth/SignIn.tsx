@@ -51,7 +51,7 @@ const SignIn = () => {
         throw new Error(data.message || 'Failed to sign in');
       }
 
-      dispatch(signInSuccess(data.user));
+      dispatch(signInSuccess(data));
       toast({
         title: "Success",
         description: "You have successfully signed in.",

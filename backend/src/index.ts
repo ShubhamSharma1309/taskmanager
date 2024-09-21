@@ -2,7 +2,6 @@ import express from 'express';
 import connectDB from './db';
 import configs from './configs';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import ErrorHandler from './utils/Error';
 import { errorMiddleware } from './middleware/ErrorHandler';
 import authRouter from './routers/auth.router';
@@ -22,7 +21,6 @@ app.use(cors({
 //app use config
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/tasks', taskRouter);
 app.get('/', (req, res) => {

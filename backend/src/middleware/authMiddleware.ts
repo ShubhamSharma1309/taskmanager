@@ -5,8 +5,8 @@ import { IUser } from '../utils/types/user.types';
 import { UnauthorizedError } from '../utils/Error';
 
 export const authJWT = (req: Request, res: Response, next: NextFunction) => {
-   
-    const token = req.cookies?.accessToken;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return next(new UnauthorizedError('No token provided'));

@@ -22,7 +22,7 @@ interface TasksProps {
 const Tasks = ({ sortBy, filterPriority, filterStatus, filterDueDate }: TasksProps) => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
-    const { currentUser } = useSelector((state: RootState) => state.user);
+    const { currentUser , accessToken} = useSelector((state: RootState) => state.user);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -32,6 +32,7 @@ const Tasks = ({ sortBy, filterPriority, filterStatus, filterDueDate }: TasksPro
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
                     },
                     credentials: 'include',
                 });
