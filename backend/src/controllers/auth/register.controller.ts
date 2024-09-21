@@ -16,8 +16,8 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         const user = await User.create(userData);
         const tokens = generateTokens(user);
 
-        res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 60 * 60 * 1000 });
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 60 * 60 * 1000 });
 
         res.status(201).json({
             success: true,
