@@ -9,5 +9,5 @@ export default {
     PORT: process.env.PORT || 5000,
     NODE_ENV: process.env.NODE_ENV || 'development',
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'myrefreshsecret',
-    REFRESH_TOKEN_EXPIRE: process.env.REFRESH_TOKEN_EXPIRE || '7d',
+    REFRESH_TOKEN_EXPIRE: process.env.REFRESH_TOKEN_EXPIRE || '30d',
 };
