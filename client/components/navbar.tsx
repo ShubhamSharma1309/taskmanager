@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { useSelector, useDispatch } from "react-redux"
 import { useRouter } from "next/navigation"
 import { CheckSquare, Menu, X } from "lucide-react"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ModeToggle } from "@/components/ui/mode-toggle"
 import { signOutUserStart, signOutUserSuccess, signOutUserFailure } from "@/lib/redux/user/userSlice"
 import { useToast } from "@/hooks/use-toast"
 import { usePathname } from "next/navigation"
-import { Spotlight } from "@/components/Spotlight"
+import { Spotlight } from "@/components/ui/Spotlight"
 import { useTheme } from "next-themes"
 
 export default function NavBar() {
@@ -51,6 +51,7 @@ export default function NavBar() {
         toast({
           title: "Success",
           description: "You have been successfully Signed out.",
+          className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
         });
         router.push('/')
       } else {
@@ -58,7 +59,7 @@ export default function NavBar() {
         toast({
           title: "Error",
           description: data.message || "Failed to log out.",
-          variant: "destructive",
+          className: "backdrop-blur-md bg-background/80 border-2 border-red-800 rounded-md"
         });
       }
     } catch (error: any) {
@@ -67,7 +68,7 @@ export default function NavBar() {
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
+        className: "backdrop-blur-md bg-background/80 border-2 border-red-800 rounded-md"
       });
     }
   }
@@ -76,9 +77,9 @@ export default function NavBar() {
     <div>
       {showSpotlight && (
         <Spotlight
-        className="-top-40 left-0 md:left-60 md:-top-20"
-        fill={theme === "dark" ? "#4ade80" : "#14532d"}
-      /> 
+          className="-top-40 left-0 md:left-60 md:-top-20"
+          fill={theme === "dark" ? "#4ade80" : "#14532d"}
+        />
       )}
 
       <header

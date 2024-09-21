@@ -1,15 +1,15 @@
 "use client";
 
+import NavBar from "@/components/navbar";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 import { persistor, store } from "@/lib/redux/store";
 import type { Metadata } from "next";
+import { useTheme } from "next-themes";
 import localFont from "next/font/local";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import "./globals.css";
-import NavBar from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster";
-import { useTheme } from "next-themes";
 
 
 const geistSans = localFont({

@@ -1,10 +1,10 @@
 "use client"
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Spotlight } from "@/components/Spotlight";
+import { Spotlight } from "@/components/ui/Spotlight";
 import { useTheme } from "next-themes";
-import { BackgroundLines } from "./background-lines";
-import { HoverBorderGradient } from "./hover-border-gradient";
+import { BackgroundLines } from "./ui/background-lines";
+import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { useRouter } from "next/navigation";
 
 export function Landing() {

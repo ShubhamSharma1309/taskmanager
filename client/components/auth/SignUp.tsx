@@ -1,5 +1,5 @@
 "use client"
-import { BackgroundLines } from "@/components/background-lines";
+import { BackgroundLines } from "@/components/ui/background-lines";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -58,6 +58,7 @@ const SignUp = () => {
       toast({
         title: "Success",
         description: "You have successfully signed up.",
+        className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
       });
       router.push('/');
     } catch (err: any) {
@@ -74,7 +75,7 @@ const SignUp = () => {
         toast({
           title: "Error",
           description: err.message || "An unexpected error occurred. Please try again.",
-          variant: "destructive",
+          className: "backdrop-blur-md bg-background/80 border-2 border-red-800 rounded-md"
         });
       }
     }
