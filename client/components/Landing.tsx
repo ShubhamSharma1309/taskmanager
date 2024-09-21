@@ -22,7 +22,7 @@ export function Landing() {
                         Welcome to
                     </h6>
                     <h1 className={cn(
-                        "text-7xl md:text-8xl font-bold text-center",
+                        "text-4xl md:text-8xl font-bold text-center",
                         theme === "dark"
                             ? "bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400"
                             : "text-black"
