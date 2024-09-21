@@ -118,6 +118,22 @@ export default function NavBar() {
               </div>
             </div>
           </nav>
+          {isMenuOpen && (
+            <div className="md:hidden mt-2">
+              {currentUser ? (
+                <Button variant="secondary" className="w-full rounded-full hover:bg-background/10" onClick={handleLogout}>
+                  Sign Out
+                </Button>
+              ) : (
+                <>
+                  <Button variant="outline" className="w-full rounded-full hover:bg-background/10" onClick={() => router.push('/sign-in')}>
+                    Sign In
+                  </Button>
+                  <Button className="w-full rounded-full mt-2" onClick={() => router.push('/sign-up')}>Sign Up</Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </header>
     </div>
