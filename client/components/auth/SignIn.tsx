@@ -17,8 +17,8 @@ const SignIn = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
   const dispatch = useDispatch();
-  //@ts-ignore
-  const { loading, error } = useSelector((state) => state.user);
+  //@ts-expect-error
+  const { loading } = useSelector((state) => state.user);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,7 +113,7 @@ const SignIn = () => {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <a
               className="text-primary hover:underline cursor-pointer"
               onClick={() => router.push('/sign-up')}
