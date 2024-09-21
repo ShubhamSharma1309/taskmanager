@@ -22,7 +22,7 @@ export function Landing() {
                         Welcome to
                     </h6>
                     <h1 className={cn(
-                        "text-4xl md:text-8xl font-bold text-center",
+                        "text-5xl md:text-8xl font-bold text-center",
                         theme === "dark"
                             ? "bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400"
                             : "text-black"
@@ -32,7 +32,7 @@ export function Landing() {
                         </span>Master
                     </h1>
                     <p className={cn(
-                        "mt-4 font-normal text-base max-w-lg text-center mx-auto",
+                        "mt-4 font-normal text-xs sm:text-base max-w-lg text-center mx-auto",
                         theme === "dark" ? "text-neutral-300" : "text-gray-600"
                     )}>
                         Effortlessly manage tasks with TaskMaster. Our interface helps you
