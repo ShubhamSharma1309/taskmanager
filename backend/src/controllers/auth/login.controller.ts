@@ -17,8 +17,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const tokens = generateTokens(user);
 
-        res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'none' });
-        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'none' });
+        res.cookie('accessToken', tokens.accessToken, { httpOnly: true, secure: true, sameSite: 'none' , path: '/', });
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'none' , path: '/', });
 
         // Verify cookies are being set
         const cookies = res.getHeader('Set-Cookie');
