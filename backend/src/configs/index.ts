@@ -10,4 +10,5 @@ export default {
     NODE_ENV: process.env.NODE_ENV || 'development',
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'myrefreshsecret',
     REFRESH_TOKEN_EXPIRE: process.env.REFRESH_TOKEN_EXPIRE || '30d',
+    CORS_ORIGIN: (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',')
 };

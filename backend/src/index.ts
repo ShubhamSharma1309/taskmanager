@@ -13,7 +13,7 @@ connectDB();
 
 //app use cors
 app.use(cors({
-    origin: ['http://localhost:3000'],
+    origin: configs.CORS_ORIGIN,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
