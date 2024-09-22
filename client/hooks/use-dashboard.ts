@@ -50,6 +50,16 @@ export default function useDashboard() {
 
     const moveTask = async (id: string, newStatus: string) => {
         try {
+            setTasks((prevTasks) =>
+                prevTasks.map((task) =>
+                    task._id === id ? { ...task, status: newStatus as "TODO" | "IN_PROGRESS" | "COMPLETED" } : task
+                )
+            );
+            toast({
+                title: "Success",
+                description: "Task status updated successfully",
+                className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
+            });
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tasks/update/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -61,22 +71,17 @@ export default function useDashboard() {
             });
 
             if (!response.ok) {
+                setTasks((prevTasks) =>
+                    prevTasks.map((task) =>
+                        task._id === id ? { ...task, status: task.status } : task
+                    )
+                );
                 throw new Error('Failed to update task');
             }
 
             const data = await response.json();
-            if (data.success) {
-                setTasks((prevTasks) =>
-                    prevTasks.map((task) =>
-                        task._id === id ? { ...task, status: newStatus as "TODO" | "IN_PROGRESS" | "COMPLETED" } : task
-                    )
-                );
-                toast({
-                    title: "Success",
-                    description: "Task status updated successfully",
-                    className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
-                });
-            } else {
+            
+            if (!data.success) {
                 throw new Error(data.message || 'Failed to update task');
             }
         } catch (error) {
