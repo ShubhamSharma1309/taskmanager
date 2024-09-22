@@ -55,6 +55,7 @@ const SignIn = () => {
       toast({
         title: "Success",
         description: "You have successfully signed in.",
+        className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
       });
       router.push('/');
     } catch (err: any) {
