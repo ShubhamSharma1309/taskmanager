@@ -8,20 +8,6 @@ const Filter = ({ state, dispatch }: { state: any, dispatch: React.Dispatch<any>
                 <div className="w-full lg:w-auto flex gap-2">
                     <SortBySelect sortBy={state.sortBy} setSortBy={(value) => dispatch({ type: 'SET_SORT_BY', payload: value })} />
                     <FilterSelect
-                        value={state.filterPriority}
-                        onChange={(value) => dispatch({ type: 'SET_FILTER_PRIORITY', payload: value })}
-                        options={[
-                            { value: "ALL", label: "All Priorities" },
-                            { value: "LOW", label: "Low" },
-                            { value: "MEDIUM", label: "Medium" },
-                            { value: "HIGH", label: "High" },
-                        ]}
-                        placeholder="Filter by Priority"
-                    />
-                </div>
-
-                <div className="w-full lg:w-auto flex gap-2">
-                    <FilterSelect
                         value={state.filterStatus}
                         onChange={(value) => dispatch({ type: 'SET_FILTER_STATUS', payload: value })}
                         options={[
@@ -31,6 +17,20 @@ const Filter = ({ state, dispatch }: { state: any, dispatch: React.Dispatch<any>
                             { value: "COMPLETED", label: "Completed" },
                         ]}
                         placeholder="Filter by Status"
+                    />
+                </div>
+
+                <div className="w-full lg:w-auto flex gap-2">
+                    <FilterSelect
+                        value={state.filterPriority}
+                        onChange={(value) => dispatch({ type: 'SET_FILTER_PRIORITY', payload: value })}
+                        options={[
+                            { value: "ALL", label: "All Priorities" },
+                            { value: "LOW", label: "Low" },
+                            { value: "MEDIUM", label: "Medium" },
+                            { value: "HIGH", label: "High" },
+                        ]}
+                        placeholder="Filter by Priority"
                     />
                     <FilterSelect
                         value={state.filterDueDate}
