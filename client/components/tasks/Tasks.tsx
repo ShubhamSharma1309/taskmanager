@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Task } from '@/lib/types/tasks';
 import { filterTasks } from '@/lib/utils';
 import { PlusCircle } from "lucide-react";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import TaskTable from './TaskTable';
 import { RootState } from '@/lib/redux/store';
@@ -43,8 +43,7 @@ const Tasks = ({ sortBy, filterPriority, filterStatus, filterDueDate }: TasksPro
 
                 const data = await response.json();
                 if (data.success) {
-                    const filteredTasks = filterTasks(data.tasks, filterPriority, filterStatus, filterDueDate, sortBy);
-                    setTasks(filteredTasks);
+                    setTasks(data.tasks);
                 } else {
                     throw new Error(data.message || 'Failed to fetch tasks');
                 }
@@ -63,7 +62,11 @@ const Tasks = ({ sortBy, filterPriority, filterStatus, filterDueDate }: TasksPro
         if (currentUser) {
             fetchTasks();
         }
-    }, [currentUser, toast, sortBy, filterPriority, filterStatus, filterDueDate]);
+    }, [currentUser, toast, accessToken]);
+
+    const filteredTasks = useMemo(() => {
+        return filterTasks(tasks, filterPriority, filterStatus, filterDueDate, sortBy);
+    }, [tasks, filterPriority, filterStatus, filterDueDate, sortBy]);
 
     return (
         <div className="flex-grow overflow-y-auto pt-8 no-scrollbar">
@@ -88,10 +91,10 @@ const Tasks = ({ sortBy, filterPriority, filterStatus, filterDueDate }: TasksPro
                             <div className="flex justify-center items-center h-40">
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                             </div>
-                        ) : tasks.length === 0 ? (
+                        ) : filteredTasks.length === 0 ? (
                             <p className="text-center text-muted-foreground">No tasks found. Start by creating a new task!</p>
                         ) : (
-                            <TaskTable tasks={tasks} setTasks={setTasks} />
+                            <TaskTable tasks={filteredTasks} setTasks={setTasks} />
                         )}
                     </CardContent>
                 </Card>
