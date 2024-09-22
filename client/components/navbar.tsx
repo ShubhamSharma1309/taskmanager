@@ -38,33 +38,16 @@ export default function NavBar() {
 
   const { toast } = useToast();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     try {
-      dispatch(signOutUserStart())
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        },
-        credentials: 'include',
-      })
-      const data = await res.json()
-      if (data.success) {
-        dispatch(signOutUserSuccess())
-        toast({
-          title: "Success",
-          description: "You have been successfully Signed out.",
-          className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
-        });
-        router.push('/')
-      } else {
-        dispatch(signOutUserFailure(data.message))
-        toast({
-          title: "Error",
-          description: data.message || "Failed to log out.",
-          className: "backdrop-blur-md bg-background/80 border-2 border-red-800 rounded-md"
-        });
-      }
+      dispatch(signOutUserStart())      
+      dispatch(signOutUserSuccess())
+      toast({
+        title: "Success",
+        description: "You have been successfully signed out.",
+        className: "backdrop-blur-md bg-background/80 border-2 border-green-800 rounded-md"
+      });
+      router.push('/')
     } catch (error: any) {
       console.log(error)
       dispatch(signOutUserFailure(error.message))
