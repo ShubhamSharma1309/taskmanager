@@ -6,6 +6,7 @@ import ErrorHandler from './utils/Error';
 import { errorMiddleware } from './middleware/ErrorHandler';
 import authRouter from './routers/auth.router';
 import taskRouter from './routers/task.router';
+import { apiRateLimit } from './middleware/rateLimiter';
 
 const app = express();
 connectDB().then(() => {
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 app.use((_req, _res, next) => {
     next(new ErrorHandler(404, 'Not found'));
 });
+app.use(apiRateLimit);
 app.use(errorMiddleware);
 
 export default app;

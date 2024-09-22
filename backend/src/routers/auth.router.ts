@@ -7,10 +7,10 @@ import { verifyToken } from '../controllers/auth/verify.controller';
 
 const router = Router();
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', authRateLimit, register);
+router.post('/login', authRateLimit, login);
 router.post('/logout', logout);
-router.post('/refresh-token', refreshToken);
+router.post('/refresh-token', authRateLimit, refreshToken);
 router.delete('/user/:id', authJWT, deleteUser);
 router.get('/verify', verifyToken);
 
