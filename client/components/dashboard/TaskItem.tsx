@@ -3,26 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Task } from '@/lib/types/tasks'
 import { formatTaskAttribute } from '@/lib/utils'
 import React from 'react'
-import { useDrag } from 'react-dnd'
 
 interface TaskProps extends Task {
     moveTask: (id: string, newStatus: string) => void;
 }
 
 export const TaskItem = ({ _id, title, description, status, priority, moveTask }: TaskProps) => {
-    
-    const [{ isDragging }, drag] = useDrag(() => ({
-        type: 'Task',
-        item: { _id, title, description, status, priority, userId: '', createdAt: new Date(), updatedAt: new Date() },
-        collect: (monitor) => ({
-            isDragging: !!monitor.isDragging(),
-        }),
-    }))
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        e.dataTransfer.setData('text/plain', _id);
+    };
 
     return (
         <div
-            ref={drag as unknown as React.RefObject<HTMLDivElement>}
-            className={`opacity-${isDragging ? '50' : '100'} cursor-move mb-4`}
+            draggable
+            onDragStart={handleDragStart}
+            className="cursor-move mb-4"
         >
             <Card className="backdrop-blur-md bg-background/80 shadow-sm border border-primary/10">
                 <CardHeader className="p-4">

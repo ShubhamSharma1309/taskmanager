@@ -2,7 +2,6 @@ import { useToast } from '@/hooks/use-toast'
 import { RootState } from '@/lib/redux/store'
 import { Task } from '@/lib/types/tasks'
 import { useEffect, useState } from 'react'
-import { useDrag } from 'react-dnd'
 import { useSelector } from 'react-redux'
 
 
