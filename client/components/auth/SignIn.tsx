@@ -11,30 +11,30 @@ import { SignInCredentials, SignInCredentialsSchema } from '@/lib/types/user';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ZodFormattedError } from "zod";
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<ZodFormattedError<{
+    email: string;
+    password: string;
+  }> | null>(null);
   const router = useRouter();
   const dispatch = useDispatch();
-  const { loading} = useSelector((state: RootState) => state.user);
+  const { loading } = useSelector((state: RootState) => state.user);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrors({});
+    setErrors(null);
     try {
       const credentials: SignInCredentials = { email, password };
       const validationResult = SignInCredentialsSchema.safeParse(credentials);
 
       if (!validationResult.success) {
-        const errors = Object.fromEntries(
-          Object.entries(validationResult.error.format())
-            .filter(([key, value]) => key !== '_errors' && typeof value === 'object' && '_errors' in value)
-            .map(([key, value]) => [key, (value as { _errors: string[] })._errors.join(', ')])
-        );
-        setErrors(errors);
+        const formattedErrors = validationResult.error.format();
+        setErrors(formattedErrors);
         return;
       }
 
@@ -92,7 +92,7 @@ const SignIn = () => {
                   placeholder="Enter your email"
                   required
                 />
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                {errors?.email && <p className="text-red-500 text-xs mt-1">{errors.email?._errors[0]}</p>}
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
@@ -104,7 +104,7 @@ const SignIn = () => {
                   placeholder="Enter your password"
                   required
                 />
-                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                {errors?.password && <p className="text-red-500 text-xs mt-1">{errors.password?._errors[0]}</p>}
               </div>
             </div>
             <Button className="w-full mt-6" type="submit" disabled={loading}>

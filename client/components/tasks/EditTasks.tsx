@@ -52,7 +52,7 @@ const EditTask = ({ task, setTasks }: { task: Task, setTasks: React.Dispatch<Rea
                                         onChange={handleChange}
                                         placeholder="Enter task title"
                                     />
-                                    {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
+                                    {errors?.title && <p className="text-red-500 text-xs mt-1">{errors.title._errors[0]}</p>}
                                 </div>
                                 <div className="space-y-1.5">
                                     <Label htmlFor="description">Description</Label>
@@ -64,7 +64,7 @@ const EditTask = ({ task, setTasks }: { task: Task, setTasks: React.Dispatch<Rea
                                         placeholder="Enter task description"
                                         className="min-h-[120px]"
                                     />
-                                    {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
+                                    {errors?.description && <p className="text-red-500 text-xs mt-1">{errors.description._errors[0]}</p>}
                                 </div>
                             </div>
                             <div className="space-y-4">

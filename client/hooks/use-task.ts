@@ -4,6 +4,7 @@ import { Task, TaskSchema, TTasks } from '@/lib/types/tasks';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { ZodFormattedError } from "zod";
 
 interface ITask {
     task?: Task;
@@ -21,11 +22,11 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
         priority: task ? task.priority : 'MEDIUM',
         dueDate: task ? task.dueDate ? new Date(task.dueDate) : undefined : undefined,
     });
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [errors, setErrors] = useState<ZodFormattedError<Task> | null>(null);
     const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
     const router = useRouter();
     const { toast } = useToast();
-    const { currentUser, accessToken } = useSelector((state: RootState) => state.user);
+    const { accessToken } = useSelector((state: RootState) => state.user);
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -39,20 +40,14 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
 
     const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setErrors({});
+        setErrors(null);
 
         try {
             const validationResult = TaskSchema.omit({ _id: true, userId: true, createdAt: true, updatedAt: true }).safeParse(formData);
 
             if (!validationResult.success) {
                 const formattedErrors = validationResult.error.format();
-                const newErrors: { [key: string]: string } = {};
-                Object.entries(formattedErrors).forEach(([key, value]) => {
-                    if (key !== '_errors' && typeof value === 'object' && '_errors' in value) {
-                        newErrors[key] = value._errors.join(', ');
-                    }
-                });
-                setErrors(newErrors);
+                setErrors(formattedErrors);
                 return;
             }
 
@@ -138,7 +133,6 @@ export default function useTask({ task, tasks, setTasks }: ITask) {
             });
         }
     };
-
 
     const handleDelete = (id: string) => {
         setDeletingTaskId(id);

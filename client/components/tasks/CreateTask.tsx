@@ -40,7 +40,7 @@ const CreateTask = ({ tasks, setTasks }: { tasks: Task[], setTasks: React.Dispat
                                         onChange={handleChange}
                                         placeholder="Enter task title"
                                     />
-                                    {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
+                                    {errors?.title && <p className="text-red-500 text-xs mt-1">{errors.title._errors[0]}</p>}
                                 </div>
                                 <div className="space-y-1.5">
                                     <Label htmlFor="description">Description</Label>
@@ -52,7 +52,7 @@ const CreateTask = ({ tasks, setTasks }: { tasks: Task[], setTasks: React.Dispat
                                         placeholder="Enter task description"
                                         className="min-h-[120px]"
                                     />
-                                    {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
+                                    {errors?.description && <p className="text-red-500 text-xs mt-1">{errors.description._errors[0] }</p>}
                                 </div>
                             </div>
                             <div className="space-y-4">
@@ -96,6 +96,9 @@ const CreateTask = ({ tasks, setTasks }: { tasks: Task[], setTasks: React.Dispat
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-end gap-4 mt-4">
+                        <DialogClose asChild>
+                            <Button type="button" variant={'secondary'}>Close</Button>
+                        </DialogClose>
                         <DialogClose asChild>
                             <Button type="submit">Create Task</Button>
                         </DialogClose>

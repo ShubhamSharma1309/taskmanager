@@ -11,7 +11,7 @@ import { RegisterCredentials, RegisterSchema } from '@/lib/types/user';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ZodError } from 'zod';
+import { ZodFormattedError } from "zod";
 
 const SignUp = () => {
   const [formData, setFormData] = useState<RegisterCredentials>({
@@ -20,10 +20,10 @@ const SignUp = () => {
     password: '',
     confirmPassword: '',
   });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<ZodFormattedError<RegisterCredentials> | null>(null);
   const router = useRouter();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state:RootState) => state.user);
+  const { loading } = useSelector((state: RootState) => state.user);
   const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,10 +33,16 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrors({});
+    setErrors(null);
 
     try {
-      RegisterSchema.parse(formData);
+      const validationResult = RegisterSchema.safeParse(formData);
+
+      if (!validationResult.success) {
+        const formattedErrors = validationResult.error.format();
+        setErrors(formattedErrors);
+        return;
+      }
 
       dispatch(signInStart());
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`, {
@@ -62,22 +68,13 @@ const SignUp = () => {
       });
       router.push('/');
     } catch (err: any) {
-      if (err instanceof ZodError) {
-        const newErrors: { [key: string]: string } = {};
-        err.errors.forEach((error) => {
-          if (error.path) {
-            newErrors[error.path[0]] = error.message;
-          }
-        });
-        setErrors(newErrors);
-      } else {
-        dispatch(signInFailure(err.message || "An unexpected error occurred"));
-        toast({
-          title: "Error",
-          description: err.message || "An unexpected error occurred. Please try again.",
-          className: "backdrop-blur-md bg-background/80 border-2 border-red-800 rounded-md"
-        });
-      }
+      dispatch(signInFailure(err.message || 'Failed to sign up'));
+      toast({
+        title: "Error",
+        description: err.message || "An unexpected error occurred. Please try again.",
+        className: "backdrop-blur-md bg-background/80 border-2 border-red-800 rounded-md"
+      });
+      console.error('Sign up error:', err);
     }
   };
 
@@ -104,7 +101,7 @@ const SignUp = () => {
                   placeholder="Enter your name"
                   required
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                {errors?.name && <p className="text-red-500 text-xs mt-1">{errors.name._errors[0]}</p>}
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
@@ -117,7 +114,7 @@ const SignUp = () => {
                   placeholder="Enter your email"
                   required
                 />
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                {errors?.email && <p className="text-red-500 text-xs mt-1">{errors.email._errors[0]}</p>}
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
@@ -130,7 +127,7 @@ const SignUp = () => {
                   placeholder="Enter your password"
                   required
                 />
-                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                {errors?.password && <p className="text-red-500 text-xs mt-1">{errors.password._errors[0]}</p>}
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -143,7 +140,7 @@ const SignUp = () => {
                   placeholder="Confirm your password"
                   required
                 />
-                {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+                {errors?.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword._errors[0]}</p>}
               </div>
             </div>
             <Button className="w-full mt-6" type="submit" disabled={loading}>
